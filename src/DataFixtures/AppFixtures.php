@@ -27,7 +27,7 @@ class AppFixtures extends Fixture
             'Lorem ipsum dolor sit amet consectetur adipisicing elit. Est expedita adipisci, voluptatibus nulla reiciendis, totam sunt nam blanditiis consectetur corporis enim fugit eligendi ex eos accusamus veniam esse quae perspiciatis?'
         );
         $article2->setTitle('To jest artykuł #2');
-        $article->setAuthor('Anna');
+        $article2->setAuthor('Anna');
         $manager->persist($article2);
 
         $manager->flush();

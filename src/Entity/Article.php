@@ -15,23 +15,28 @@ class Article
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
-    private ?string $title = null;
+    private string $title;
 
     #[ORM\Column(length: 2000)]
-    private ?string $content = null;
+    private string $content;
 
     #[ORM\Column(type: Types::DATE_MUTABLE)]
-    private ?\DateTime $dateCreated = null;
+    private \DateTime $dateCreated;
 
     #[ORM\Column(length: 255)]
-    private ?string $author = null;
+    private string $author;
+
+    public function __construct()
+    {
+        $this->dateCreated = new \DateTime();
+    }
 
     public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function getTitle(): ?string
+    public function getTitle(): string
     {
         return $this->title;
     }
@@ -39,11 +44,10 @@ class Article
     public function setTitle(string $title): static
     {
         $this->title = $title;
-
         return $this;
     }
 
-    public function getContent(): ?string
+    public function getContent(): string
     {
         return $this->content;
     }
@@ -51,11 +55,10 @@ class Article
     public function setContent(string $content): static
     {
         $this->content = $content;
-
         return $this;
     }
 
-    public function getDateCreated(): ?\DateTime
+    public function getDateCreated(): \DateTime
     {
         return $this->dateCreated;
     }
@@ -63,11 +66,10 @@ class Article
     public function setDateCreated(\DateTime $dateCreated): static
     {
         $this->dateCreated = $dateCreated;
-
         return $this;
     }
 
-    public function getAuthor(): ?string
+    public function getAuthor(): string
     {
         return $this->author;
     }
@@ -75,7 +77,6 @@ class Article
     public function setAuthor(string $author): static
     {
         $this->author = $author;
-
         return $this;
     }
 }
