@@ -15,6 +15,12 @@ class BlogController extends AbstractController
     #[Route('/main-page', name: 'main_page')]
     public function mainPage(): Response
     {
-        return new Response('To jest strona glowna');
+        $articles = $this->articleRepository->findAll();
+        dump($articles);
+        return new Response(content: "To będzie strona główna");
+    }
+    public function __construct(
+        private ArticleRepository $articleRepository
+    ) {
     }
 }
