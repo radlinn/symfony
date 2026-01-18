@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Articles</title>
+</head>
+<body>
+
+<h1>Lista artykułów</h1>
+
+{% if articles is defined %}
+    {% for article in articles %}
+        <h2>{{ article.title }}</h2>
+        <p>{{ article.content }}</p>
+        <a href="{{ article.link }}">Czytaj więcej</a>
+        <hr>
+    {% endfor %}
+{% else %}
+    <p>Brak artykułów</p>
+{% endif %}
+
+</body>
+</html>
