@@ -31,12 +31,14 @@ class CreateUserCommand extends Command{
         ->setDescription('Tworzy nowego uzytkownika')
         ->setHelp('Aby utworzyc nowego uzytkownika uzyj tej komendy')
         ->addArgument('email', InputArgument::REQUIRED, 'Email nowego uytkownika')
+        ->addArgument('username', InputArgument::REQUIRED, 'Username użytkownika')
         ->addArgument('password', InputArgument::OPTIONAL, 'Haslo nowego uzytkownika');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int {
         
         $email = $input->getArgument('email');
+        $username = $input->getArgument('username');
         $plainPassword = $input-> getArgument('password') ?? 'example';
         
         $existingUser = $this->entityManager->getRepository(User::class)->findOneBy(['email'=> $email]);
@@ -46,6 +48,7 @@ class CreateUserCommand extends Command{
         }
         $user = new User();
         $user->setEmail($email);
+        $user->setUsername($username);
 
         $hashedPassword = $this->passwordHasher->hashPassword($user, $plainPassword);
         $user->setPassword($hashedPassword);
