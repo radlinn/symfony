@@ -3,6 +3,7 @@
 namespace App\DataFixtures;
 
 use App\Entity\Article;
+use App\Entity\InformationAboutMe;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
 
@@ -29,6 +30,22 @@ class AppFixtures extends Fixture
         $article2->setTitle('To jest artykuł #2');
         $article2->setAuthor('Anna');
         $manager->persist($article2);
+
+        $info1= new InformationAboutMe();
+        $info1->setKey('name');
+        $info1->setValue('Ania');
+
+        $info2= new InformationAboutMe();
+        $info2->setKey('occupation');
+        $info2->setValue('Frontend dev');
+
+        $info3= new InformationAboutMe();
+        $info3->setKey('location');
+        $info3->setValue('Poland');
+
+        $info1= new InformationAboutMe();
+        $info1->setKey('hobby');
+        $info1->setValue('Cooking and swimming');
 
         $manager->flush();
     }
