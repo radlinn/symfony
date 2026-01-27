@@ -31,22 +31,27 @@ class AppFixtures extends Fixture
         $article2->setAuthor('Anna');
         $manager->persist($article2);
 
-        $info1= new InformationAboutMe();
+        $info1 = new InformationAboutMe();
         $info1->setKey('name');
         $info1->setValue('Ania');
+        $manager->persist($info1);
 
-        $info2= new InformationAboutMe();
+        $info2 = new InformationAboutMe();
         $info2->setKey('occupation');
         $info2->setValue('Frontend dev');
+        $manager->persist($info2);
 
-        $info3= new InformationAboutMe();
+        $info3 = new InformationAboutMe();
         $info3->setKey('location');
         $info3->setValue('Poland');
+        $manager->persist($info3);
 
-        $info1= new InformationAboutMe();
-        $info1->setKey('hobby');
-        $info1->setValue('Cooking and swimming');
+        $info4 = new InformationAboutMe();
+        $info4->setKey('hobby');
+        $info4->setValue('Cooking and swimming');
+        $manager->persist($info4);
 
         $manager->flush();
+
     }
 }

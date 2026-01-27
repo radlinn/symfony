@@ -13,21 +13,26 @@ use App\Repository\InformationAboutMeRepository;
 
 final class AboutMePageController extends AbstractController
 {
-    #[Route('/about-me', name: 'app_about_me_page')]
-    public function index(): JsonResponse
-    {
-        $user = $this->getUser();
+        private InformationAboutMeRepository $infoRepository;
 
-    return new JsonResponse();
-        #'data' => [
-        #    'email' => $user?->getEmail(),
-        #    'username' => $user?->getUsername(),
-        #    'roles' => $user?->getRoles(),
-        #],
-        #'statusCode' => 200,
+    public function __construct(InformationAboutMeRepository $infoRepository)
+    {
+        $this->infoRepository = $infoRepository;
     }
-    public function __construct(
-        private InformationAboutMeRepository $informationAboutMeRepository
-    ) {
-    }   
+
+    #[Route('/about-me', name: 'app_about_me_page')]
+public function index(): JsonResponse
+{
+    $items = $this->infoRepository->findAll();
+
+    $data = [];
+    foreach ($items as $item) {
+        $data[$item->getKey()] = $item->getValue();
+    }
+
+    return new JsonResponse([
+        'data' => $data,
+        'statusCode' => 200,
+    ]);
+}
 }
