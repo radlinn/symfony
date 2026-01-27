@@ -1,0 +1,24 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Strona główna{% endblock %}
+
+{% block body %}
+    {% if latestArticle %}
+        <section class="latest-article">
+            <h2>Najnowszy artykuł</h2>
+
+            <h3>
+                <a href="{{ path('article_show', { id: latestArticle.id }) }}">
+                    {{ latestArticle.title }}
+                </a>
+            </h3>
+
+            <p>{{ latestArticle.content|slice(0, 300) ~ '...' }}</p>
+            <small>{{ latestArticle.dateCreated|date('d.m.Y') }}</small>
+            <small>Autor: {{ latestArticle.author }}</small>
+            <a href="{{ path('article_show', {'id': latestArticle.id}) }}">Czytaj dalej</a>
+        </section>
+    {% else %}
+        <p>Brak artykułów.</p>
+    {% endif %}
+{% endblock %}

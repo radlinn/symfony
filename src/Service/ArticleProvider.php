@@ -5,14 +5,17 @@ namespace App\Service;
 
 class ArticleProvider{
     public function transformData(array $articles): array{
-        $transformedData = [];
-        foreach ($articles as $article){
-            $transformedData['articles'][] =[
-                'title' => $article-> getTitle(),
-                'content' => substr($article->getContent(), 0, 30) . '...',
-                'link' => 'article/' . $article->getId(),
-            ];
-        }
-        return $transformedData;
+        $data = [];
+
+    foreach ($articles as $article) {
+        $data[] = [
+            'id' => $article->getId(),
+            'title' => $article->getTitle(),
+            'content' => $article->getContent(),
+            'author' => $article->getAuthor(),
+        ];
+    }
+
+    return $data;
     }
 }
