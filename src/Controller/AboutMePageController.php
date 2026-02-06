@@ -20,8 +20,8 @@ final class AboutMePageController extends AbstractController
         $this->infoRepository = $infoRepository;
     }
 
-    #[Route('/about-me', name: 'app_about_me_page')]
-public function index(): JsonResponse
+    #[Route('api/about-me', name: 'api_about_me')]
+public function api(): JsonResponse
 {
     $items = $this->infoRepository->findAll();
 
@@ -35,4 +35,14 @@ public function index(): JsonResponse
         'statusCode' => 200,
     ]);
 }
+
+#[Route('/about-me', name: 'app_about_me_page')]
+    public function index(): Response
+    {
+        $data = $this->infoRepository->findAll();
+
+        return $this->render('about_me/index.html.twig', [
+            'data' => $data,
+        ]);
+    }
 }

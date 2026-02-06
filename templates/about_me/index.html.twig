@@ -1,0 +1,16 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}O mnie{% endblock %}
+
+{% block body %}
+    <h1>O mnie</h1>
+
+    <ul>
+        {% for item in data %}
+            <li>
+                <strong>{{ item.key|capitalize }}:</strong>
+                {{ item.value }}
+            </li>
+        {% endfor %}
+    </ul>
+{% endblock %}
