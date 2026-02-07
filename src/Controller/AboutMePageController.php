@@ -20,7 +20,7 @@ final class AboutMePageController extends AbstractController
         $this->infoRepository = $infoRepository;
     }
 
-    #[Route('api/about-me', name: 'api_about_me')]
+    #[Route('/api/about-me', name: 'api_about_me')]
 public function api(): JsonResponse
 {
     $items = $this->infoRepository->findAll();

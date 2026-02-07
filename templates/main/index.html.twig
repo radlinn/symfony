@@ -1,24 +1,23 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Strona główna{% endblock %}
-
 {% block body %}
-    {% if latestArticle %}
-        <section class="latest-article">
-            <h2>Najnowszy artykuł</h2>
 
-            <h3>
-                <a href="{{ path('article_show', { id: latestArticle.id }) }}">
-                    {{ latestArticle.title }}
-                </a>
-            </h3>
+{% if query is defined %}
+    <h2>Wyniki wyszukiwania dla: "{{ query }}"</h2>
 
-            <p>{{ latestArticle.content|slice(0, 300) ~ '...' }}</p>
-            <small>{{ latestArticle.dateCreated|date('d.m.Y') }}</small>
-            <small>Autor: {{ latestArticle.author }}</small>
-            <a href="{{ path('article_show', {'id': latestArticle.id}) }}">Czytaj dalej</a>
-        </section>
+    {% for article in articles %}
+        <h3>{{ article.title }}</h3>
+        <p>{{ article.content|slice(0, 150) }}...</p>
+        <a href="{{ path('article_show', {'id': article.id}) }}">Czytaj więcej</a>
     {% else %}
-        <p>Brak artykułów.</p>
-    {% endif %}
+        <p>Brak wyników</p>
+    {% endfor %}
+
+{% else %}
+    <h2>Najnowszy artykuł</h2>
+
+    <h3>{{ latestArticle.title }}</h3>
+    <p>{{ latestArticle.content }}</p>
+{% endif %}
+
 {% endblock %}

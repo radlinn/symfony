@@ -25,6 +25,19 @@ class ArticleRepository extends ServiceEntityRepository
             ->getOneOrNullResult();
     }
 
+    public function searchByText(string $query): array
+    {
+        return $this->createQueryBuilder('a')
+            ->where('a.title LIKE :q')
+            ->orWhere('a.content LIKE :q')
+            ->setParameter('q', '%' . $query . '%')
+            ->orderBy('a.dateCreated', 'DESC') // opcjonalnie, najnowsze u góry
+            ->getQuery()
+            ->getResult();
+    }
+
+
+
 
     //    /**
     //     * @return Article[] Returns an array of Article objects
