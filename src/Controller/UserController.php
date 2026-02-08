@@ -10,13 +10,15 @@ use App\Formatter\ApiResponseFormatter;
 use Symfony\Component\HttpFoundation\Request;  
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
+use App\Validator\UserValidator;
 
 class UserController extends AbstractController
 {
     public function __construct(
         private UserRepository $userRepository,
         private UserPasswordHasherInterface $passwordHasher,
-        private ApiResponseFormatter $formatter
+        private ApiResponseFormatter $formatter,
+        private UserValidator $validator
     ) {}
 
     #[Route('/api/test-auth', name: 'api_test_auth', methods: ['GET'])]
@@ -78,11 +80,9 @@ class UserController extends AbstractController
     {
         $data = json_decode($request->getContent(), true);
 
-        if (!isset($data['email']) || !isset($data['password'])) {
-            return $this->formatter->error(
-                'Email and password are required',
-                Response::HTTP_BAD_REQUEST
-            );
+        $errors = $this->validator->validateCreate($data ?? []);
+        if (!empty($errors)) {
+            return $this->formatter->error($errors, Response::HTTP_BAD_REQUEST);
         }
 
         $existingUser = $this->userRepository->findOneBy(['email' => $data['email']]);
@@ -121,6 +121,11 @@ class UserController extends AbstractController
         }
 
         $data = json_decode($request->getContent(), true);
+
+        $errors = $this->validator->validateUpdate($data ?? []);
+        if (!empty($errors)) {
+            return $this->formatter->error($errors, Response::HTTP_BAD_REQUEST);
+        }
 
         if (isset($data['email'])) {
             $existingUser = $this->userRepository->findOneBy(['email' => $data['email']]);
