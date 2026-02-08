@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\ArticleRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -26,9 +28,16 @@ class Article
     #[ORM\Column(length: 255)]
     private string $author;
 
+    /**
+     * @var Collection<int, User>
+     */
+    #[ORM\ManyToMany(targetEntity: User::class, inversedBy: 'articles')]
+    private Collection $Article;
+
     public function __construct()
     {
         $this->dateCreated = new \DateTime();
+        $this->Article = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -77,6 +86,30 @@ class Article
     public function setAuthor(string $author): static
     {
         $this->author = $author;
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, User>
+     */
+    public function getArticle(): Collection
+    {
+        return $this->Article;
+    }
+
+    public function addArticle(User $article): static
+    {
+        if (!$this->Article->contains($article)) {
+            $this->Article->add($article);
+        }
+
+        return $this;
+    }
+
+    public function removeArticle(User $article): static
+    {
+        $this->Article->removeElement($article);
+
         return $this;
     }
 }
