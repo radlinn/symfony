@@ -53,7 +53,7 @@ class BlogController extends AbstractController
             'articles' => $this->articleRepository->findAll(),
         ]);
     }
-        #[Route('/articles/{id}', name: 'article_show')]
+    #[Route('/articles/{id}', name: 'article_show')]
     public function showArticle(int $id): Response
     {
         $article = $this->articleRepository->find($id);
@@ -66,5 +66,16 @@ class BlogController extends AbstractController
             'article' => $article,
         ]);
     }
+
+    #[Route('/api/articles', name: 'api_articles')]
+    public function api(): JsonResponse
+    {
+        $articles = $this->articleRepository->findAll();
+
+        return $this->json(
+            $this->articleProvider->transformData($articles)
+        );
+    }
+
 
     }
