@@ -4,9 +4,19 @@ namespace App\Controller;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Annotation\Route;
+use App\Entity\User;
+use App\Repository\UserRepository;
+use Symfony\Component\HttpFoundation\Request;  
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 class UserController extends AbstractController
 {
+    public function __construct(
+        private UserRepository $userRepository,
+        private UserPasswordHasherInterface $passwordHasher
+    ) {}
+
     #[Route('/api/test-auth', name: 'api_test_auth', methods: ['GET'])]
     public function testAuth(): JsonResponse
     {
@@ -15,7 +25,7 @@ class UserController extends AbstractController
         return new JsonResponse([
             'authenticated' => $user !== null,
             'user' => $user ? $user->getUserIdentifier() : null,
-            'message' => 'Jeśli to widzisz to JWT działa!'
+            'message' => 'JWT działa!'
         ]);
     }
 
@@ -101,52 +111,53 @@ class UserController extends AbstractController
     #[Route('/api/users', name: 'api_user_create', methods: ['POST'])]
     public function create(Request $request): JsonResponse
     {
-        $data = json_decode($request->getContent(), true);
+    $data = json_decode($request->getContent(), true);
 
-        if (!isset($data['email']) || !isset($data['password'])) {
-            return new JsonResponse([
-                'data' => null,
-                'messages' => null,
-                'errors' => ['Email and password are required'],
-                'statusCode' => 400,
-                'additionalData' => null
-            ], 400);
-        }
-
-        $existingUser = $this->userRepository->findByEmail($data['email']);
-        if ($existingUser) {
-            return new JsonResponse([
-                'data' => null,
-                'messages' => null,
-                'errors' => ['User with this email already exists'],
-                'statusCode' => 409,
-                'additionalData' => null
-            ], 409);
-        }
-
-        $user = new User();
-        $user->setEmail($data['email']);
-        
-        $hashedPassword = $this->passwordHasher->hashPassword($user, $data['password']);
-        $user->setPassword($hashedPassword);
-
-        $roles = $data['roles'] ?? ['ROLE_USER'];
-        $user->setRoles($roles);
-
-        $this->userRepository->save($user);
-
+    if (!isset($data['email']) || !isset($data['password'])) {
         return new JsonResponse([
-            'data' => [
-                'id' => $user->getId(),
-                'email' => $user->getEmail(),
-                'roles' => $user->getRoles(),
-            ],
-            'messages' => ['User created successfully'],
-            'errors' => null,
-            'statusCode' => 201,
-            'additionalData' => null
-        ], 201);
+            'data' => null,
+            'messages' => null,
+            'errors' => ['Email and password are required'],
+            'statusCode' => 400,
+        ], 400);
     }
+
+    $existingUser = $this->userRepository->findOneBy(['email' => $data['email']]);
+    if ($existingUser) {
+        return new JsonResponse([
+            'data' => null,
+            'messages' => null,
+            'errors' => ['User with this email already exists'],
+            'statusCode' => 409,
+        ], 409);
+    }
+
+    $user = new User();
+    $user->setEmail($data['email']);
+    
+    $username = $data['username'] ?? explode('@', $data['email'])[0];
+    $user->setUsername($username);
+    
+    $hashedPassword = $this->passwordHasher->hashPassword($user, $data['password']);
+    $user->setPassword($hashedPassword);
+
+    $roles = $data['roles'] ?? ['ROLE_USER'];
+    $user->setRoles($roles);
+
+    $this->userRepository->save($user, true);
+
+    return new JsonResponse([
+        'data' => [
+            'id' => $user->getId(),
+            'email' => $user->getEmail(),
+            'username' => $user->getUsername(),
+            'roles' => $user->getRoles(),
+        ],
+        'messages' => ['User created successfully'],
+        'errors' => null,
+        'statusCode' => 201,
+    ], 201);
+}
 
     #[Route('/api/users/{id}', name: 'api_user_update', methods: ['PUT', 'PATCH'])]
     public function update(int $id, Request $request): JsonResponse
